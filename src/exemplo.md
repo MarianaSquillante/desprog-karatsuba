@@ -67,18 +67,16 @@ $$T(n) = 4T(n/2) + O(n)$$
 
 ??? Checkpoint
 
-Usando o **Teorema Mestre**, qual é a complexidade assintótica da recorrência $T(n) = 4T(n/2) + O(n)$?
-
-Lembre-se: no Teorema Mestre, comparamos $n^{\log_b a}$ com $f(n)$. Aqui, $a = 4$, $b = 2$ e $f(n) = O(n)$.
+Com base na recorrência acima e nas complexidades que vimos até agora, o que você consegue concluir sobre a eficiência desse método?
 
 ::: Gabarito
 Calculamos $\log_2 4 = 2$, portanto $n^{\log_b a} = n^2$.
 
-Como $f(n) = O(n)$ cresce mais devagar que $n^2$, estamos no **Caso 1** do Teorema Mestre:
+Como $f(n) = O(n)$ cresce mais devagar que $n^2$, a recorrência resolve para:
 
 $$T(n) = O(n^2)$$
 
-{red}(Nadamos, nadamos... e morremos na praia.) Dividir o número ao meio e gerar 4 subproblemas **não melhorou nada** em relação ao método escolar — a complexidade continua sendo $O(n^2)$, idêntica à multiplicação ingênua. Estamos presos nessas 4 multiplicações.
+{red}(Nadamos, nadamos... e morremos na praia.) Dividir o número ao meio e gerar 4 subproblemas **não melhorou nada** — a complexidade continua sendo $O(n^2)$. Estamos presos nessas 4 multiplicações.
 
 Será que existe alguma forma matemática de reduzir esse número?
 :::
