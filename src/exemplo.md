@@ -69,90 +69,186 @@ Será que existe alguma forma matemática de reduzir esse número?
 
 ???
 
-## A Sacada Genial de Karatsuba
-
-Não precisamos de $A_1B_0$ e $A_0B_1$ separados. **Só precisamos da SOMA deles:** $(A_1B_0 + A_0B_1)$.
-
-Vamos obter essa soma por outro caminho. Considere:
-
-$$(A_1 + A_0) \cdot (B_1 + B_0)$$
-
-Expandindo:
-
-$$(A_1 + A_0)(B_1 + B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0$$
-
-Os termos $A_1B_1$ e $A_0B_0$ já seriam calculados de qualquer forma. Portanto:
-
-$$A_1B_0 + A_0B_1 = (A_1 + A_0)(B_1 + B_0) - A_1B_1 - A_0B_0$$
-
 ---
 
-## O Algoritmo Karatsuba
+## O Problema Central
 
-Definimos três produtos recursivos:
+Observe novamente a expressão que precisamos computar:
 
-- $P_1 = A_1 \cdot B_1$
-- $P_2 = A_0 \cdot B_0$
-- $P_3 = (A_1 + A_0) \cdot (B_1 + B_0)$
+$$x \cdot y = A_1B_1 \cdot 10^{n} + (A_1B_0 + A_0B_1) \cdot 10^{n/2} + A_0B_0$$
 
-Então o resultado final é:
+Os termos que realmente exigem multiplicação são:
+- $A_1B_1$ (produto das partes altas)
+- $A_1B_0$ (produto cruzado 1)
+- $A_0B_1$ (produto cruzado 2)
+- $A_0B_0$ (produto das partes baixas)
 
-$$x \cdot y = P_1 \cdot 10^{n} + (P_3 - P_1 - P_2) \cdot 10^{n/2} + P_2$$
+ **A Pergunta de Karatsuba**
+
+ Será que realmente precisamos calcular $A_1B_0$ e $A_0B_1$ separadamente?
+
+ Afinal, na expressão final, eles **sempre aparecem somados**: $(A_1B_0 + A_0B_1)$.
+
+ Será que existe um jeito de obter essa **soma** diretamente, sem precisar calcular cada termo individualmente?
 
 ??? Checkpoint
-Quantas multiplicações de números de tamanho $n/2$ são necessárias agora?
+Por que estamos interessados apenas na SOMA $A_1B_0 + A_0B_1$ e não nos termos separados?
 ::: Gabarito
-**Apenas 3 multiplicações!** $P_1$, $P_2$ e $P_3$.
+Porque na fórmula final do produto, os dois termos cruzados aparecem APENAS como uma soma:
+$$x \cdot y = A_1B_1 \cdot 10^{n} + \color{red}({A_1B_0 + A_0B_1}) \color{black} \cdot 10^{n/2} + A_0B_0$$
+
+Se conseguirmos calcular essa soma diretamente, economizamos uma multiplicação inteira!
 :::
 ???
 
 ---
 
-## Comparação Visual
+## O diferencial
 
-| Abordagem | Multiplicações | Complexidade |
-|-----------|:-------------:|:------------:|
-| Método escolar | 4 | $O(n^2)$ |
-| **Karatsuba** | **3** | $\mathbf{O(n^{1.585})}$ |
+Karatsuba percebeu que poderíamos usar um produto "auxiliar" para nos dar os termos cruzados. Observe o seguinte produto:
 
-**A ideia-chave:** Trocamos 1 multiplicação (cara) por 2 somas e 1 subtração (baratas). Para números grandes, o saldo é extremamente positivo.
+$$(A_1 + A_0) \cdot (B_1 + B_0)$$
+
+Vamos expandir essa expressão:
+
+$$(A_1 + A_0)(B_1 + B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0$$
+
+Agora, vamos reorganizar os termos:
+
+$$(A_1 + A_0)(B_1 + B_0) = \underbrace{A_1B_1 + A_0B_0}_{\text{já conhecemos}} + \underbrace{(A_1B_0 + A_0B_1)}_{\text{o que queremos!}}$$
+
+Isolando o termo que nos interessa:
+
+$$A_1B_0 + A_0B_1 = (A_1 + A_0)(B_1 + B_0) - A_1B_1 - A_0B_0$$
+
+??? Checkpoint
+O que torna essa descoberta tão especial? Que tipo de operação estamos "trocando"?
+::: Gabarito
+Estamos trocando **DUAS multiplicações** ($A_1B_0$ e $A_0B_1$) por:
+- **UMA multiplicação** extra: $(A_1 + A_0)(B_1 + B_0)$
+- **DUAS somas**: $A_1 + A_0$ e $B_1 + B_0$
+- **DUAS subtrações**: $(A_1 + A_0)(B_1 + B_0) - A_1B_1 - A_0B_0$
+
+Como somas e subtrações custam $O(n)$ enquanto multiplicações custam mais caro ($O(n^2)$),a substituição colabora para a radução da complexidade
+:::
+???
 
 ---
 
-## Exemplo Interativo: Faça Você Mesmo
+## Funcionamento do Algorítmo
 
-Pegue $A = 12$ e $B = 34$ (base 10, $n=2$):
+Agora, em vez de 4 multiplicações, fazemos apenas **3 multiplicações recursivas**:
 
-1. **Divida:**
-   - $A_1 = 1$, $A_0 = 2$
-   - $B_1 = 3$, $B_0 = 4$
+**Passo 1: Calcule três produtos especiais**
 
-2. **Calcule os três produtos:**
-   - $Z_1 = 1 \cdot 3 = 3$
-   - $Z_2 = 2 \cdot 4 = 8$
-   - $Z_3 = (1+2) \cdot (3+4) = 3 \cdot 7 = 21$
+- **$Z_1 = A_1 \cdot B_1$** (produto das partes altas)
+- **$Z_2 = A_0 \cdot B_0$** (produto das partes baixas)
+- **$Z_3 = (A_1 + A_0) \cdot (B_1 + B_0)$** (produto das somas)
 
-3. **Termo do meio:**
-   - $Z_3 - Z_1 - Z_2 = 21 - 3 - 8 = 10$
+**Passo 2: Combine os resultados**
 
-4. **Monte o resultado** ($10^{n}=100$, $10^{n/2}=10$):
-   - $3 \cdot 100 + 10 \cdot 10 + 8 = 300 + 100 + 8 = 408$
+Substituindo na fórmula original:
+
+$$x \cdot y = Z_1 \cdot 10^{n} + (Z_3 - Z_1 - Z_2) \cdot 10^{n/2} + Z_2$$
+
+??? Checkpoint
+Quantas multiplicações de números de tamanho $n/2$ são necessárias agora? Compare com o método ingênuo.
+::: Gabarito
+**Apenas 3 multiplicações!** $Z_1$, $Z_2$ e $Z_3$.
+
+O método ingênuo precisava de 4 multiplicações. Karatsuba economizou **25% das multiplicações** em cada nível da recursão!
+
+A relação de recorrência agora é:
+$$T(n) = 3T(n/2) + O(n)$$
+
+Isso é muito melhor que 
+$T(n) = 4T(n/2) + O(n)$!
+:::
+???
+
+---
+
+## Por Que Isso é Revolucionário?
+
+| Abordagem | Multiplicações por nível | Complexidade final |
+|-----------|:------------------------:|:------------------:|
+| Método escolar | 1 (mas dígito a dígito) | $O(n^2)$ |
+| Divisão ingênua | 4 | $O(n^2)$ |
+| **Karatsuba** | **3** | $\mathbf{O(n^{1.585})}$ |
+
+
+
+Reduzir de 4 para 3 multiplicações pode parecer pouco, mas veja o impacto na árvore de recursão:
+Cada nível tem **3 vezes mais problemas** que o anterior
+Mas os problemas têm **metade do tamanho**
+O número total de operações cresce como $n^{\log_2 3} \approx n^{1.585}$
+
+ Para $n = 1.000.000$ dígitos, isso é **centenas de vezes mais rápido** que $O(n^2)$!
+
+---
+
+## Exemplo Passo a Passo
+
+Vamos aplicar Karatsuba a um exemplo concreto para fixar o entendimento.
+
+**Problema:** Multiplicar $A = 12$ e $B = 34$ (base 10, $n=2$)
+
+### Etapa 1: Dividir os números
+
+- $A = 12 \rightarrow A_1 = 1$, $A_0 = 2$
+- $B = 34 \rightarrow B_1 = 3$, $B_0 = 4$
+
+
+
+### Etapa 2: Calcular os três produtos
+
+- $Z_1 = A_1 \cdot B_1 = 1 \cdot 3 = 3$
+- $Z_2 = A_0 \cdot B_0 = 2 \cdot 4 = 8$
+- $Z_3 = (A_1 + A_0) \cdot (B_1 + B_0) = (1+2) \cdot (3+4) = 3 \cdot 7 = 21$
+
+??? Checkpoint
+Por que $Z_3$ usa as somas $A_1+A_0$ e $B_1+B_0$? O que isso representa?
+::: Gabarito
+$Z_3$ é o produto auxiliar que nos dará os termos cruzados. Quando expandimos:
+
+$$(A_1+A_0)(B_1+B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0 = Z_1 + (A_1B_0 + A_0B_1) + Z_2$$
+
+É como se $Z_3$ contivesse "tudo de uma vez" — daí podemos isolar a soma que precisamos.
+:::
+???
+
+### Etapa 3: Calcular o termo do meio
+
+- $Z_3 - Z_1 - Z_2 = 21 - 3 - 8 = 10$
+
+Isto é exatamente $(A_1B_0 + A_0B_1)$!
+
+### Etapa 4: Montar o resultado final
+
+Lembre-se: $10^{n} = 10^2 = 100$ e $10^{n/2} = 10^1 = 10$
+
+
+$$x \cdot y = Z_1 \cdot 100 + (Z_3 - Z_1 - Z_2) \cdot 10 + Z_2$$
+$$= 3 \cdot 100 + 10 \cdot 10 + 8$$
+$$= 300 + 100 + 8 = 408$$
 
 Conferindo: $12 \times 34 = 408$ ✓
 
+??? Checkpoint
+Neste exemplo, usamos multiplicações diretas porque $n=2$ (caso base). Em um caso maior, como $n=8$, o que aconteceria?
+::: Gabarito
+Para $n=8$, cada $Z_1$, $Z_2$ e $Z_3$ seria calculado **recursivamente** usando o MESMO algoritmo!
+
+Ou seja:
+- $Z_1 = \text{Karatsuba}(A_1, B_1)$ (subproblemas de 4 dígitos)
+- $Z_2 = \text{Karatsuba}(A_0, B_0)$ (subproblemas de 4 dígitos)
+- $Z_3 = \text{Karatsuba}(A_1+A_0, B_1+B_0)$ (subproblemas de 4 dígitos)
+
+E cada um desses, por sua vez, faria mais 3 chamadas recursivas, e assim por diante, até chegar em números de 1 dígito.
+:::
+???
+
 ---
-
-## Resumo da Mágica
-
-O que Karatsuba fez não foi mágica, foi **álgebra estratégica**. Ele percebeu que, calculando o produto da soma das partes, ganhava de brinde os termos cruzados que precisava. O preço foi apenas umas subtrações extras — muito mais baratas que uma multiplicação completa.
-
----
-
-## Para Saber Mais
-
-- O algoritmo de Karatsuba foi publicado em 1962 por Anatoly Karatsuba.
-- Foi o primeiro algoritmo de multiplicação a superar a barreira $O(n^2)$.
-- Hoje, algoritmos ainda mais rápidos existem, como o FFT (Toom-Cook, Schönhage–Strassen), mas Karatsuba é um excelente equilíbrio para números de tamanho moderado (centenas a milhares de dígitos).
 
 ## A Recursão
 
@@ -375,3 +471,18 @@ Como estamos interessados na ordem de crescimento, ignoramos constantes e termos
 Portanto, a complexidade do algoritmo de Karatsuba é:
 
 $$T(n)=O(n^{\log_2 3})\approx O(n^{1.58})$$
+
+---
+
+## Resumindo 
+
+Karatsuba percebeu que:
+
+1. **O problema real** são as 4 multiplicações do método ingênuo
+2. **A solução** é calcular um produto extra $(A_1 + A_0)(B_1 + B_0)$
+3. **A economia** vem de obter $A_1B_0 + A_0B_1$ por diferença, evitando duas multiplicações
+
+ Trocamos **multiplicações caras** por **adições e subtrações baratas**.
+
+Isso exige apenas um pequeno trabalho extra de 
+$O(n)$ por nível. O benefício é reduzir o fator de ramificação da árvore de 4 para 3.
