@@ -1,62 +1,48 @@
-Algoritmo de Karatsuba
-======================
+# Algoritmo de Karatsuba
 
-Redefinindo o "Básico" e a Falha da Divisão Simples
-----------------------------------------------------
+## Redefinindo o "Básico" e a Falha da Divisão Simples
 
-Até agora, em muitas análises de algoritmos, tratamos qualquer operação aritmética — soma, subtração, multiplicação — como tendo custo $O(1)$. Isso faz sentido quando lidamos com números que cabem em um registrador de 32 ou 64 bits do processador. Mas e quando precisamos multiplicar números com **milhares ou milhões de dígitos**, como em criptografia ou simulações científicas?
+Até agora, tratamos qualquer operação aritmética — soma, subtração, multiplicação — como tendo custo $O(1)$. Isso faz sentido para números que cabem em um registrador de 32 ou 64 bits. Mas e quando precisamos multiplicar números com **milhares ou milhões de dígitos**, como em criptografia ou simulações científicas?
 
-Nesses casos, o computador não consegue resolver a multiplicação em um único ciclo de clock. Ele precisa operar **dígito por dígito**. Por isso, precisamos redefinir o que chamamos de operação básica.
+Nesses casos, o computador opera **dígito por dígito**. Por isso, precisamos redefinir a operação básica.
 
 !!! Aviso
 A partir de agora, a **operação básica** é a manipulação de um único dígito. Isso muda tudo na nossa análise de complexidade.
 !!!
 
-Com essa nova definição, as consequências imediatas são:
+Consequências imediatas:
 
-* **Somar** dois números de $n$ dígitos requer percorrer cada dígito uma vez: custo $O(n)$.
-* **Multiplicar** dois números de $n$ dígitos pelo método escolar (cada dígito de um pelo cada dígito do outro) requer $n \times n$ operações: custo $O(n^2)$.
+- **Somar** dois números de $n$ dígitos: custo $O(n)$.
+- **Multiplicar** pelo método escolar: custo $O(n^2)$.
 
-Nosso objetivo é encontrar um algoritmo de multiplicação melhor do que $O(n^2)$. A primeira ideia natural de um cientista da computação é aplicar a técnica de **Dividir para Conquistar**.
+Nosso objetivo: encontrar um algoritmo melhor do que $O(n^2)$.
 
-A Tentativa: Dividir para Conquistar
--------------------------------------
+---
 
-A ideia é simples: se o número é grande demais, quebre-o ao meio e resolva partes menores. Dado dois números $x$ e $y$ de $n$ dígitos, podemos separá-los em uma metade alta e uma metade baixa:
+## A Tentativa Ingênua: Dividir para Conquistar
+
+Dado dois números $x$ e $y$ de $n$ dígitos, separe-os em metade alta e metade baixa:
 
 $$x = A_1 \cdot 10^{n/2} + A_0$$
-
 $$y = B_1 \cdot 10^{n/2} + B_0$$
 
-onde $A_1$ e $B_1$ são as metades altas (dígitos mais significativos) e $A_0$ e $B_0$ são as metades baixas (dígitos menos significativos), cada uma com $n/2$ dígitos.
+**Exemplo:** $x = 1234$, $n=4$ → $A_1 = 12$, $A_0 = 34$, pois $1234 = 12 \cdot 10^2 + 34$.
 
-Por exemplo, para $x = 1234$ e $n = 4$: $A_1 = 12$ e $A_0 = 34$, de forma que $1234 = 12 \cdot 10^{2} + 34$.
+Expandindo o produto:
 
-Agora, basta multiplicar $x$ por $y$ aplicando a propriedade distributiva:
+$$x \cdot y = (A_1 \cdot 10^{n/2} + A_0)(B_1 \cdot 10^{n/2} + B_0)$$
+$$= A_1 B_1 \cdot 10^{n} + (A_1 B_0 + A_0 B_1) \cdot 10^{n/2} + A_0 B_0$$
 
-$$x \cdot y = (A_1 \cdot 10^{n/2} + A_0) \cdot (B_1 \cdot 10^{n/2} + B_0)$$
-
-Expandindo:
-
-$$x \cdot y = A_1 B_1 \cdot 10^{n} + (A_1 B_0 + A_0 B_1) \cdot 10^{n/2} + A_0 B_0$$
-
-Note que multiplicar por $10^{n/2}$ ou $10^n$ é equivalente a deslocar os dígitos (um simples *shift*), o que custa apenas $O(n)$. O custo real está nas multiplicações entre os blocos.
+Multiplicar por $10^{n/2}$ ou $10^n$ é um simples deslocamento (*shift*), custo $O(n)$. O custo real está nas multiplicações entre blocos.
 
 ??? Checkpoint
-
-Olhe com atenção para a equação expandida acima:
-
-$$x \cdot y = A_1 B_1 \cdot 10^{n} + (A_1 B_0 + A_0 B_1) \cdot 10^{n/2} + A_0 B_0$$
-
-Quantas multiplicações entre blocos de $n/2$ dígitos precisamos realizar para calcular o resultado completo? Liste cada uma delas.
-
+Quantas multiplicações entre blocos de $n/2$ dígitos precisamos realizar?
 ::: Gabarito
 São **4 multiplicações**: $A_1 B_1$, $A_1 B_0$, $A_0 B_1$ e $A_0 B_0$.
-
-Cada uma delas é uma multiplicação entre números de tamanho $n/2$, ou seja, subproblemas menores que o original — exatamente o que a técnica de Dividir para Conquistar promete.
 :::
-
 ???
+
+---
 
 A Decepção: Ainda $O(n^2)$
 ---------------------------
@@ -82,3 +68,105 @@ Será que existe alguma forma matemática de reduzir esse número?
 :::
 
 ???
+
+## A Sacada Genial de Karatsuba
+
+Não precisamos de $A_1B_0$ e $A_0B_1$ separados. **Só precisamos da SOMA deles:** $(A_1B_0 + A_0B_1)$.
+
+Vamos obter essa soma por outro caminho. Considere:
+
+$$(A_1 + A_0) \cdot (B_1 + B_0)$$
+
+Expandindo:
+
+$$(A_1 + A_0)(B_1 + B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0$$
+
+Os termos $A_1B_1$ e $A_0B_0$ já seriam calculados de qualquer forma. Portanto:
+
+$$A_1B_0 + A_0B_1 = (A_1 + A_0)(B_1 + B_0) - A_1B_1 - A_0B_0$$
+
+---
+
+## O Algoritmo Karatsuba
+
+Definimos três produtos recursivos:
+
+- $P_1 = A_1 \cdot B_1$
+- $P_2 = A_0 \cdot B_0$
+- $P_3 = (A_1 + A_0) \cdot (B_1 + B_0)$
+
+Então o resultado final é:
+
+$$x \cdot y = P_1 \cdot 10^{n} + (P_3 - P_1 - P_2) \cdot 10^{n/2} + P_2$$
+
+??? Checkpoint
+Quantas multiplicações de números de tamanho $n/2$ são necessárias agora?
+::: Gabarito
+**Apenas 3 multiplicações!** $P_1$, $P_2$ e $P_3$.
+
+Recorrência: $T(n) = 3T(n/2) + O(n)$.
+:::
+???
+
+---
+
+## Complexidade do Karatsuba
+
+Pelo Teorema Mestre:
+
+- $a = 3$, $b = 2$, $\log_2 3 \approx 1.585$
+- $f(n) = O(n)$ cresce mais devagar que $n^{\log_2 3}$
+
+Portanto:
+
+$$T(n) = O(n^{\log_2 3}) \approx O(n^{1.585})$$
+
+**Isso é significativamente melhor que $O(n^2)$!**
+
+---
+
+## Comparação Visual
+
+| Abordagem | Multiplicações | Complexidade |
+|-----------|:-------------:|:------------:|
+| Método escolar | 4 | $O(n^2)$ |
+| **Karatsuba** | **3** | $\mathbf{O(n^{1.585})}$ |
+
+**A ideia-chave:** Trocamos 1 multiplicação (cara) por 2 somas e 1 subtração (baratas). Para números grandes, o saldo é extremamente positivo.
+
+---
+
+## Exemplo Interativo: Faça Você Mesmo
+
+Pegue $A = 12$ e $B = 34$ (base 10, $n=2$):
+
+1. **Divida:**
+   - $A_1 = 1$, $A_0 = 2$
+   - $B_1 = 3$, $B_0 = 4$
+
+2. **Calcule os três produtos:**
+   - $P_1 = 1 \cdot 3 = 3$
+   - $P_2 = 2 \cdot 4 = 8$
+   - $P_3 = (1+2) \cdot (3+4) = 3 \cdot 7 = 21$
+
+3. **Termo do meio:**
+   - $P_3 - P_1 - P_2 = 21 - 3 - 8 = 10$
+
+4. **Monte o resultado** ($10^{n}=100$, $10^{n/2}=10$):
+   - $3 \cdot 100 + 10 \cdot 10 + 8 = 300 + 100 + 8 = 408$
+
+Conferindo: $12 \times 34 = 408$ ✓
+
+---
+
+## Resumo da Mágica
+
+O que Karatsuba fez não foi mágica, foi **álgebra estratégica**. Ele percebeu que, calculando o produto da soma das partes, ganhava de brinde os termos cruzados que precisava. O preço foi apenas umas subtrações extras — muito mais baratas que uma multiplicação completa.
+
+---
+
+## Para Saber Mais
+
+- O algoritmo de Karatsuba foi publicado em 1962 por Anatoly Karatsuba.
+- Foi o primeiro algoritmo de multiplicação a superar a barreira $O(n^2)$.
+- Hoje, algoritmos ainda mais rápidos existem, como o FFT (Toom-Cook, Schönhage–Strassen), mas Karatsuba é um excelente equilíbrio para números de tamanho moderado (centenas a milhares de dígitos).
