@@ -1,6 +1,6 @@
 # Algoritmo de Karatsuba
 
-## O Limite do Método Tradicional
+## As Limitações do Método Tradicional
 
 Até agora, tratamos qualquer operação aritmética — soma, subtração, multiplicação — como tendo custo $O(1)$. Isso faz sentido para números que cabem em um registrador de 32 ou 64 bits. Mas e quando precisamos multiplicar números com **milhares ou milhões de dígitos**, como em criptografia ou simulações científicas?
 
@@ -94,7 +94,7 @@ Se conseguirmos calcular essa soma diretamente, economizamos uma multiplicação
 :::
 ???
 
-## O Diferencial de Karatsuba
+## A Ideia de Karatsuba
 
 Karatsuba percebeu que poderíamos usar um produto "auxiliar" para nos dar os termos cruzados. Observe o seguinte produto:
 
