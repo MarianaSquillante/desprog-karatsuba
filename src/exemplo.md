@@ -40,7 +40,7 @@ São **4 multiplicações**: $A_1 B_1$, $A_1 B_0$, $A_0 B_1$ e $A_0 B_0$.
 :::
 ???
 
-## Ainda $O(n^2)$
+## Por Que a Divisão Simples Não Basta
 
 Com 4 multiplicações de subproblemas de tamanho $n/2$ e um custo adicional de $O(n)$ para as somas e os *shifts*, a relação de recorrência desse método é:
 
@@ -124,7 +124,7 @@ Como somas e subtrações custam $O(n)$ enquanto multiplicações custam mais ca
 :::
 ???
 
-## Funcionamento do Algorítmo
+## Estrutura do Algoritmo
 
 Agora, em vez de 4 multiplicações, fazemos apenas **3 multiplicações recursivas**:
 
@@ -303,7 +303,7 @@ Ele corresponde ao trabalho feito **dentro de cada nível** do algoritmo (somas,
 !!!
 
 
-## Somando Tudo
+## Montando a Recorrência
 
 Com isso, o custo do algoritmo em um único nível é: $3$ chamadas recursivas (cada uma com metade do tamanho) mais esse trabalho extra de $O(n)$.
 
@@ -400,7 +400,7 @@ Essa é a altura da árvore.
 :::
 ???
 
-## Somando os Andares
+## Somando os Níveis da Árvore
 
 Agora podemos somar o custo de todos os níveis:
 
