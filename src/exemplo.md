@@ -1,6 +1,6 @@
 # Algoritmo de Karatsuba
 
-## Redefinindo o "Básico" e a Falha da Divisão Simples
+## O Limite do Método Tradicional
 
 Até agora, tratamos qualquer operação aritmética — soma, subtração, multiplicação — como tendo custo $O(1)$. Isso faz sentido para números que cabem em um registrador de 32 ou 64 bits. Mas e quando precisamos multiplicar números com **milhares ou milhões de dígitos**, como em criptografia ou simulações científicas?
 
@@ -17,9 +17,7 @@ Consequências imediatas:
 
 Nosso objetivo: encontrar um algoritmo melhor do que $O(n^2)$.
 
----
-
-## A Tentativa Ingênua: Dividir para Conquistar
+## Dividir para Conquistar
 
 Dado dois números $x$ e $y$ de $n$ dígitos, separe-os em metade alta e metade baixa:
 
@@ -42,10 +40,7 @@ São **4 multiplicações**: $A_1 B_1$, $A_1 B_0$, $A_0 B_1$ e $A_0 B_0$.
 :::
 ???
 
----
-
-A Decepção: Ainda $O(n^2)$
----------------------------
+## Ainda $O(n^2)$
 
 Com 4 multiplicações de subproblemas de tamanho $n/2$ e um custo adicional de $O(n)$ para as somas e os *shifts*, a relação de recorrência desse método é:
 
@@ -62,14 +57,12 @@ Como $f(n) = O(n)$ cresce mais devagar que $n^2$, a recorrência resolve para:
 
 $$T(n) = O(n^2)$$
 
-{red}(Nadamos, nadamos... e morremos na praia.) Dividir o número ao meio e gerar 4 subproblemas **não melhorou nada** — a complexidade continua sendo $O(n^2)$. Estamos presos nessas 4 multiplicações.
+ Dividir o número ao meio e gerar 4 subproblemas **não melhorou nada** — a complexidade continua sendo $O(n^2)$. Estamos presos nessas 4 multiplicações.
 
 Será que existe alguma forma matemática de reduzir esse número?
 :::
 
 ???
-
----
 
 ## O Problema Central
 
@@ -101,9 +94,7 @@ Se conseguirmos calcular essa soma diretamente, economizamos uma multiplicação
 :::
 ???
 
----
-
-## O diferencial
+## O Diferencial de Karatsuba
 
 Karatsuba percebeu que poderíamos usar um produto "auxiliar" para nos dar os termos cruzados. Observe o seguinte produto:
 
@@ -132,8 +123,6 @@ Estamos trocando **DUAS multiplicações** ($A_1B_0$ e $A_0B_1$) por:
 Como somas e subtrações custam $O(n)$ enquanto multiplicações custam mais caro ($O(n^2)$),a substituição colabora para a radução da complexidade
 :::
 ???
-
----
 
 ## Funcionamento do Algorítmo
 
@@ -166,7 +155,44 @@ $T(n) = 4T(n/2) + O(n)$!
 :::
 ???
 
----
+Agora que entendemos a ideia matemática, vamos ver como isso aparece em formato de algoritmo.
+```c
+long karatsuba(long x, long y) {
+    if (x < 10 || y < 10) {
+        return x * y;
+    }
+
+    int n = max(num_digitos(x), num_digitos(y));
+
+   // Garante divisão exata no meio
+    if (n % 2 != 0) {
+        n++;
+    }
+
+    int m = n / 2;
+
+    long potencia = potencia10(m);
+
+    long a1 = x / potencia;
+    long a0 = x % potencia;
+
+    long b1 = y / potencia;
+    long b0 = y % potencia;
+
+    long ac = karatsuba(a1, b1);
+    long bd = karatsuba(a0, b0);
+    long abcd = karatsuba(a1 + a0, b1 + b0);
+
+    long meio = abcd - a1c - bd;
+
+    return ac * potencia10(n) + meio * potencia + bd;
+}
+```
+!!! Aviso: Visão de Hardware e Otimização
+O código acima utiliza a base 10 (potências de 10) para facilitar o entendimento didático da matemática. No entanto, em implementações reais de baixo nível, as operações de divisão (`/`) e módulo (`%`) são bastante custosas para o processador. 
+
+Na prática, o Karatsuba é implementado em **base 2 (binário)**. Isso permite substituir as divisões e multiplicações por **deslocamentos de bits** (`>>` e `<<`) e **máscaras bit a bit** (`&`), que geralmente custam apenas 1 ciclo de *clock*, maximizando a eficiência da execução.
+!!!
 
 ## Por Que Isso é Revolucionário?
 
@@ -176,16 +202,12 @@ $T(n) = 4T(n/2) + O(n)$!
 | Divisão ingênua | 4 | $O(n^2)$ |
 | **Karatsuba** | **3** | $\mathbf{O(n^{1.585})}$ |
 
-
-
 Reduzir de 4 para 3 multiplicações pode parecer pouco, mas veja o impacto na árvore de recursão:
 Cada nível tem **3 vezes mais problemas** que o anterior
 Mas os problemas têm **metade do tamanho**
 O número total de operações cresce como $n^{\log_2 3} \approx n^{1.585}$
 
  Para $n = 1.000.000$ dígitos, isso é **centenas de vezes mais rápido** que $O(n^2)$!
-
----
 
 ## Exemplo Passo a Passo
 
@@ -197,8 +219,6 @@ Vamos aplicar Karatsuba a um exemplo concreto para fixar o entendimento.
 
 - $A = 12 \rightarrow A_1 = 1$, $A_0 = 2$
 - $B = 34 \rightarrow B_1 = 3$, $B_0 = 4$
-
-
 
 ### Etapa 2: Calcular os três produtos
 
@@ -227,7 +247,6 @@ Isto é exatamente $(A_1B_0 + A_0B_1)$!
 
 Lembre-se: $10^{n} = 10^2 = 100$ e $10^{n/2} = 10^1 = 10$
 
-
 $$x \cdot y = Z_1 \cdot 100 + (Z_3 - Z_1 - Z_2) \cdot 10 + Z_2$$
 $$= 3 \cdot 100 + 10 \cdot 10 + 8$$
 $$= 300 + 100 + 8 = 408$$
@@ -247,8 +266,6 @@ Ou seja:
 E cada um desses, por sua vez, faria mais 3 chamadas recursivas, e assim por diante, até chegar em números de 1 dígito.
 :::
 ???
-
----
 
 ## A Recursão
 
@@ -285,7 +302,6 @@ Esse termo $O(n)$ **não representa uma nova chamada recursiva**.
 Ele corresponde ao trabalho feito **dentro de cada nível** do algoritmo (somas, subtrações e deslocamentos).
 !!!
 
----
 
 ## Somando Tudo
 
@@ -302,8 +318,6 @@ $$T(n) = 3T\left(\frac{n}{2}\right) + O(n)$$
 Onde $3$ representa o número de chamadas, $\frac{n}{2}$ é o tamanho da entrada que cada chamada resolve, e $O(n)$ é o custo de "remontar" a solução com somas e deslocamentos.
 :::
 ???
-
----
 
 ## Analisando a Complexidade
 
@@ -365,8 +379,6 @@ $$c\cdot n\cdot \left(\frac{3}{2}\right)^i$$
 :::
 ???
 
----
-
 ## Altura da Árvore
 
 Para somar todos os níveis, precisamos saber quantos níveis existem.
@@ -387,8 +399,6 @@ $$k=\log_2 n$$
 Essa é a altura da árvore.
 :::
 ???
-
----
 
 ## Somando os Andares
 
@@ -471,8 +481,6 @@ Como estamos interessados na ordem de crescimento, ignoramos constantes e termos
 Portanto, a complexidade do algoritmo de Karatsuba é:
 
 $$T(n)=O(n^{\log_2 3})\approx O(n^{1.58})$$
-
----
 
 ## Resumindo 
 
