@@ -189,9 +189,9 @@ long karatsuba(long x, long y) {
 }
 ```
 !!! Aviso: Visão de Hardware e Otimização
-O código acima utiliza a base 10 (potências de 10) para facilitar o entendimento didático da matemática. No entanto, em implementações reais de baixo nível, as operações de divisão (`/`) e módulo (`%`) são bastante custosas para o processador. 
+O código acima utiliza a base 10 (potências de 10) para facilitar o entendimento didático da matemática. No entanto, em implementações reais de baixo nível, as operações de divisão ```txt (/)``` e módulo ```txt (%)``` são bastante custosas para o processador. 
 
-Na prática, o Karatsuba é implementado em **base 2 (binário)**. Isso permite substituir as divisões e multiplicações por **deslocamentos de bits** (`>>` e `<<`) e **máscaras bit a bit** (`&`), que geralmente custam apenas 1 ciclo de *clock*, maximizando a eficiência da execução.
+Na prática, o Karatsuba é implementado em **base 2 (binário)**. Isso permite substituir as divisões e multiplicações por **deslocamentos de bits** ```txt (>> e <<)``` e **máscaras bit a bit** ```txt (&)```, que geralmente custam apenas 1 ciclo de *clock*, maximizando a eficiência da execução.
 !!!
 
 ## Por Que Isso é Revolucionário?
