@@ -42,27 +42,104 @@ São **4 multiplicações**: $A_1 B_1$, $A_1 B_0$, $A_0 B_1$ e $A_0 B_0$.
 
 ## Por Que a Divisão Simples Não Basta
 
-Com 4 multiplicações de subproblemas de tamanho $n/2$ e um custo adicional de $O(n)$ para as somas e os *shifts*, a relação de recorrência desse método é:
+Vimos que, ao dividir os números ao meio, geramos **4 multiplicações** de subproblemas de tamanho $n/2$ e um custo adicional de $O(n)$ para as somas e os *shifts*. A relação de recorrência desse método é:
 
 $$T(n) = 4T(n/2) + O(n)$$
 
+Será que essa estratégia de "dividir para conquistar" já é suficiente para vencer o método escolar? Vamos analisar a **árvore de recursão** desse método ingênuo para entender o que está acontecendo.
+
+![Árvore de recursão da divisão simples](divisao_conquista_arvore.png)
+
 ??? Checkpoint
-
-Com base na recorrência acima e nas complexidades que vimos até agora, o que você consegue concluir sobre a eficiência desse método?
-
+No **Nível 0**, temos apenas 1 problema de tamanho $n$. Qual é o custo extra (trabalho de somar e deslocar) desse nível?
 ::: Gabarito
-Calculamos $\log_2 4 = 2$, portanto $n^{\log_b a} = n^2$.
+$$c \cdot n$$
+O custo é proporcional a $n$ porque, como vimos, as operações realizadas (somas, subtrações e deslocamentos) percorrem todos os dígitos dos números.
 
-Como $f(n) = O(n)$ cresce mais devagar que $n^2$, a recorrência resolve para:
+Multiplicamos por uma constante $c$ porque estamos realizando **um número fixo de operações** desse tipo, independentemente de $n$.
 
-$$T(n) = O(n^2)$$
+Ou seja, o tempo total é algo como:
 
- Dividir o número ao meio e gerar 4 subproblemas **não melhorou nada** — a complexidade continua sendo $O(n^2)$. Estamos presos nessas 4 multiplicações.
-
-Será que existe alguma forma matemática de reduzir esse número?
+$$(\text{número de operações}) \times (\text{custo de cada operação}) = c \cdot n$$
 :::
-
 ???
+
+??? Checkpoint
+No **Nível 1**, existem 4 problemas de tamanho $n/2$. Qual é o custo total deste nível?
+::: Gabarito
+$$4 \cdot (c \cdot \frac{n}{2}) = 2cn$$
+:::
+???
+
+??? Checkpoint
+No **Nível 2**, existem $4^2 = 16$ problemas de tamanho $n/4$. Qual é o custo total?
+::: Gabarito
+$$16 \cdot (c \cdot \frac{n}{4}) = 4cn$$
+:::
+???
+
+??? Checkpoint
+Consegue perceber o padrão? Escreva a fórmula do custo total no **Nível $i$**.
+::: Gabarito
+O custo **dobra** a cada nível da árvore. A fórmula para o custo total de um nível $i$ qualquer é:
+$$c \cdot n \cdot 2^i$$
+:::
+???
+
+??? Checkpoint
+Se o tamanho do problema começa em $n$ e é **dividido por 2** a cada nível, qual será o tamanho do subproblema após $k$ níveis?
+::: Gabarito
+O tamanho será:
+$$\frac{n}{2^k}$$
+:::
+???
+
+??? Checkpoint
+A recursão para quando o tamanho do problema chega a **1**. Use a fórmula anterior ($\frac{n}{2^k} = 1$) para isolar o $k$ e descobrir a **altura** da árvore.
+::: Gabarito
+$$\frac{n}{2^k} = 1 \implies n = 2^k \implies k = \log_2 n$$
+A altura da árvore é $\log_2 n$.
+:::
+???
+
+Agora, vamos somar o custo de todos os níveis para chegar no custo total $S$.
+
+??? Checkpoint
+Monte a soma dos custos de todos os níveis (do nível 0 até o nível $\log_2 n$).
+::: Gabarito
+$$S = cn + 2cn + 4cn + \dots + cn \cdot 2^{\log_2 n}$$
+Fatorando $cn$:
+$$S = cn \cdot [1 + 2 + 4 + \dots + 2^{\log_2 n}]$$
+:::
+???
+
+??? Checkpoint
+A soma dentro dos colchetes é uma PG. Identifique os termos para usar na fórmula da soma ($S_x = a_1 \cdot \frac{q^x - 1}{q - 1}$):
+*   Primeiro termo ($a_1$):
+*   Razão ($q$):
+*   Quantidade de termos ($x$):
+::: Gabarito
+*   $a_1 = 1$
+*   $q = 2$
+*   $x = \log_2 n + 1$ (contando do nível 0 ao nível $\log_2 n$)
+:::
+???
+
+??? Checkpoint
+Calcule a soma total $S$ simplificando a expressão. 
+*(Dica: lembre-se que $2^{\log_2 n} = n$)*.
+::: Gabarito
+$$S = cn \cdot \left( \frac{2^{\log_2 n + 1} - 1}{2 - 1} \right)$$
+$$S = cn \cdot (2 \cdot 2^{\log_2 n} - 1)$$
+$$S = cn \cdot (2n - 1) = 2cn^2 - cn$$
+:::
+???
+
+**Veredito:** Como o termo de maior ordem é $n^2$, a complexidade é **$O(n^2)$**.
+
+Dividir o número ao meio e gerar 4 subproblemas **não melhorou a eficiência**, continuamos empatados com o método escolar.
+
+Será que existe alguma forma matemática de reduzir esse número de ramificações?
 
 ## O Problema Central
 
@@ -338,19 +415,15 @@ O algoritmo gera 3 subproblemas, cada um com tamanho $n/2$.
 ???
 Agora vamos analisar o custo por nível da árvore.
 
+Como o trabalho extra para combinar os resultados (somas e subtrações) continua sendo proporcional ao número de dígitos, o custo do nível 0 ainda é $cn$.
+
 ??? Checkpoint
 No nível 0 existe apenas 1 problema de tamanho $n$.
 Qual é o custo extra desse nível?
 ::: Gabarito
 $$c\cdot n$$
 
-O custo é proporcional a $n$ porque, como vimos, as operações realizadas (somas, subtrações e deslocamentos) percorrem todos os dígitos dos números.
-
-Multiplicamos por uma constante $c$ porque estamos realizando **um número fixo de operações** desse tipo, independentemente de $n$.
-
-Ou seja, o tempo total é algo como:
-
-$$(\text{número de operações}) \times (\text{custo de cada operação}) = c \cdot n$$
+Como o trabalho extra para combinar os resultados (somas e subtrações) continua sendo proporcional ao número de dígitos, o custo do nível 0 ainda é $cn$.
 :::
 ???
 
@@ -379,30 +452,9 @@ $$c\cdot n\cdot \left(\frac{3}{2}\right)^i$$
 :::
 ???
 
-## Altura da Árvore
-
-Para somar todos os níveis, precisamos saber quantos níveis existem.
-
-??? Checkpoint
-Se a cada nível o tamanho do problema é dividido por 2, qual é o tamanho do subproblema no nível $k$?
-::: Gabarito
-$$\frac{n}{2^k}$$
-:::
-???
-
-??? Checkpoint
-A árvore para quando o tamanho chega em 1.
-Resolva:
-$$\frac{n}{2^k}=1$$
-::: Gabarito
-$$k=\log_2 n$$
-Essa é a altura da árvore.
-:::
-???
-
 ## Somando os Níveis da Árvore
 
-Agora podemos somar o custo de todos os níveis:
+A altura da árvore continua sendo $k = \log_2 n$, pois o tamanho do problema ainda é dividido por 2 a cada passo. Vamos montar a soma total $S$:
 
 ??? Checkpoint
 Monte a soma dos custos dos níveis da árvore.
