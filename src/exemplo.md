@@ -175,27 +175,27 @@ Se conseguirmos calcular essa soma diretamente, economizamos uma multiplicação
 
 Karatsuba percebeu que poderíamos usar um produto "auxiliar" para nos dar os termos cruzados. Observe o seguinte produto:
 
-$$(A_1 + A_0) \cdot (B_1 + B_0)$$
+$$(\color{blue}A_1\color{black} + \color{green}A_0 \color{black}) \cdot (\color{purple}B_1\color{black} + \color{orange}B_0\color{black})$$
 
 Vamos expandir essa expressão:
 
-$$(A_1 + A_0)(B_1 + B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0$$
+$$(\color{blue}A_1\color{black} + \color{green}A_0 \color{black}) \cdot (\color{purple}B_1\color{black} + \color{orange}B_0\color{black}) = \color{blue}A_1 \color{purple}B_1 \color{black}+ \color{blue}A_1\color{orange}B_0 \color{black} + \color{green} A_0 \color{purple}B_1 \color{black}+ \color{green}A_0 \color{orange}B_0$$
 
 Agora, vamos reorganizar os termos:
 
-$$(A_1 + A_0)(B_1 + B_0) = \underbrace{A_1B_1 + A_0B_0}_{\text{já conhecemos}} + \underbrace{(A_1B_0 + A_0B_1)}_{\text{o que queremos!}}$$
+$$(\color{blue}A_1\color{black} + \color{green}A_0\color{black})(\color{purple}B_1\color{black} +\color{orange} B_0)\color{black} = \underbrace{\color{blue}A_1\color{purple}B_1\color{black} + \color{green}A_0\color{orange}B_0}_{\text{já conhecemos}}\color{black} + \underbrace{(\color{blue}A_1\color{orange}B_0\color{black} + \color{green}A_0\color{purple}B_1\color{black})}_{\text{o que queremos!}}$$
 
 Isolando o termo que nos interessa:
 
-$$A_1B_0 + A_0B_1 = (A_1 + A_0)(B_1 + B_0) - A_1B_1 - A_0B_0$$
+$$\color{blue}A_1\color{orange}B_0 \color{black}+ \color{green}A_0\color{purple}B_1\color{black} = (\color{blue}A_1 \color{black}+ \color{green}A_0\color{black})(\color{purple}B_1 \color{black}+\color{orange} B_0 \color{black}) \color{black}- \color{blue}A_1\color{purple}B_1 \color{black}- \color{green}A_0\color{orange}B_0$$
 
 ??? Checkpoint
 O que torna essa descoberta tão especial? Que tipo de operação estamos "trocando"?
 ::: Gabarito
-Estamos trocando **DUAS multiplicações** ($A_1B_0$ e $A_0B_1$) por:
-- **UMA multiplicação** extra: $(A_1 + A_0)(B_1 + B_0)$
-- **DUAS somas**: $A_1 + A_0$ e $B_1 + B_0$
-- **DUAS subtrações**: $(A_1 + A_0)(B_1 + B_0) - A_1B_1 - A_0B_0$
+Estamos trocando **DUAS multiplicações** ($\color{blue}A_1\color{orange}B_0$ e $\color{green}A_0\color{purple}B_1$) por:
+- **UMA multiplicação** extra: $(\color{blue}A_1 \color{black}+ \color{green}A_0\color{black})(\color{purple}B_1\color{black} + \color{orange}B_0\color{black})$
+- **DUAS somas**: $\color{blue}A_1\color{black} + \color{green}A_0$ e $\color{purple}B_1\color{black} + \color{orange}B_0$
+- **DUAS subtrações**: $(\color{blue}A_1\color{black} + \color{green}A_0\color{black})(\color{purple}B_1 +\color{orange} B_0\color{black}) - \color{blue}A_1\color{purple}B_1 \color{black}- \color{green}A_0\color{orange}B_0$
 
 Como somas e subtrações custam $O(n)$ enquanto multiplicações custam mais caro ($O(n^2)$),a substituição colabora para a radução da complexidade
 :::
