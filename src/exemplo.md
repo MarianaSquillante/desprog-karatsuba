@@ -75,7 +75,7 @@ $$T(n) = 4T(n/2) + O(n)$$
 
 Será que essa estratégia de "dividir para conquistar" já é suficiente para vencer o método escolar? Vamos analisar a **árvore de recursão** desse método ingênuo para entender o que está acontecendo.
 
-![Árvore de recursão da divisão simples](img/divisao_conquista_arvore.png)
+![Árvore de recursão da divisão simples](divisao_conquista_arvore.png)
 
 ??? Checkpoint
 No **Nível 0**, temos apenas 1 problema de tamanho $n$. Qual é o custo extra (trabalho de somar e deslocar) desse nível?
@@ -127,7 +127,7 @@ $$S = cn \cdot \frac{2^{\log_2 n + 1} - 1}{2 - 1} = cn \cdot (2n - 1) = 2cn^2 - 
 :::
 ???
 
-{red}(Nadamos, nadamos... e morremos na praia.) Como o termo de maior ordem é $n^2$, a complexidade é $O(n^2)$ — idêntica à multiplicação dígito a dígito. Dividir ao meio e gerar 4 subproblemas **não melhorou nada**.
+Como o termo de maior ordem é $n^2$, a complexidade é $O(n^2)$, idêntica à multiplicação dígito a dígito. Dividir ao meio e gerar 4 subproblemas **não melhorou nada**.
 
 Será que existe alguma forma matemática de reduzir esse número de ramificações?
 
@@ -342,7 +342,7 @@ Onde $3$ é o número de chamadas recursivas, $n/2$ é o tamanho de cada subprob
 
 ## Analisando a Complexidade
 
-![Árvore de recursão do algoritmo de Karatsuba](img/karatsuba_arvore.png)
+![Árvore de recursão do algoritmo de Karatsuba](karatsuba_arvore.png)
 
 ??? Checkpoint
 Observe a árvore acima. Em cada chamada, quantos subproblemas são gerados? E qual é o tamanho de cada um?
