@@ -190,10 +190,10 @@ Então o problema se resume a: **como obter $A_1B_0 + A_0B_1$ com menos do que 2
 
 ??? Checkpoint
 
-Tente expandir o produto $(A_1 + A_0) \cdot (B_1 + B_0)$ usando a propriedade distributiva. Quais termos aparecem na expansão?
+Tente expandir o produto $(\color{blue}A_1\color{black} + \color{green}A_0\color{black}) \cdot (\color{purple}B_1\color{black} + \color{orange}B_0\color{black})$ usando a propriedade distributiva. Quais termos aparecem na expansão?
 
 ::: Gabarito
-$$( A_1 + A_0) \cdot (B_1 + B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0$$
+$$(\color{blue}A_1\color{black} + \color{green}A_0 \color{black}) \cdot (\color{purple}B_1\color{black} + \color{orange}B_0\color{black}) = \color{blue}A_1 \color{purple}B_1 \color{black}+ \color{blue}A_1\color{orange}B_0 \color{black} + \color{green} A_0 \color{purple}B_1 \color{black}+ \color{green}A_0 \color{orange}B_0$$
 :::
 
 ???
@@ -203,7 +203,11 @@ $$( A_1 + A_0) \cdot (B_1 + B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0$$
 Compare a expansão acima com os produtos que já sabemos calcular: $A_1B_1$ e $A_0B_0$. O que sobra se subtrairmos esses dois da expansão?
 
 ::: Gabarito
-$$(A_1 + A_0)(B_1 + B_0) - A_1B_1 - A_0B_0 = A_1B_0 + A_0B_1$$
+$$(\color{blue}A_1\color{black} + \color{green}A_0\color{black})(\color{purple}B_1\color{black} +\color{orange} B_0)\color{black} = \underbrace{\color{blue}A_1\color{purple}B_1\color{black} + \color{green}A_0\color{orange}B_0}_{\text{já conhecemos}}\color{black} + \underbrace{(\color{blue}A_1\color{orange}B_0\color{black} + \color{green}A_0\color{purple}B_1\color{black})}_{\text{o que queremos!}}$$
+
+Isolando o termo que nos interessa:
+
+$$\color{blue}A_1\color{orange}B_0 \color{black}+ \color{green}A_0\color{purple}B_1\color{black} = (\color{blue}A_1 \color{black}+ \color{green}A_0\color{black})(\color{purple}B_1 \color{black}+\color{orange} B_0 \color{black}) \color{black}- \color{blue}A_1\color{purple}B_1 \color{black}- \color{green}A_0\color{orange}B_0$$
 
 Ou seja, a soma dos termos cruzados que precisamos é exatamente o que sobra!
 :::
@@ -215,13 +219,13 @@ Ou seja, a soma dos termos cruzados que precisamos é exatamente o que sobra!
 Com base nisso, que tipo de operação estamos "trocando"? Por que essa troca é vantajosa?
 
 ::: Gabarito
-Estamos trocando **duas multiplicações** ($A_1B_0$ e $A_0B_1$) por:
+Estamos trocando **DUAS multiplicações** ($\color{blue}A_1\color{orange}B_0$ e $\color{green}A_0\color{purple}B_1$) por:
 
-- **Uma multiplicação** extra: $(A_1 + A_0)(B_1 + B_0)$
-- **Duas somas** para montar as entradas: $A_1 + A_0$ e $B_1 + B_0$
-- **Duas subtrações** para isolar o resultado: $(\ldots) - A_1B_1 - A_0B_0$
+- **UMA multiplicação** extra: $(\color{blue}A_1 \color{black}+ \color{green}A_0\color{black})(\color{purple}B_1\color{black} + \color{orange}B_0\color{black})$
+- **DUAS somas**: $\color{blue}A_1\color{black} + \color{green}A_0$ e $\color{purple}B_1\color{black} + \color{orange}B_0$
+- **DUAS subtrações**: $(\color{blue}A_1\color{black} + \color{green}A_0\color{black})(\color{purple}B_1 +\color{orange} B_0\color{black}) - \color{blue}A_1\color{purple}B_1 \color{black}- \color{green}A_0\color{orange}B_0$
 
-Como somas e subtrações custam $O(n)$ e multiplicações custam muito mais, essa troca é extremamente vantajosa.
+Como somas e subtrações custam $O(n)$ enquanto multiplicações custam mais caro ($O(n^2)$), a substituição colabora para a redução da complexidade.
 :::
 
 ???
@@ -230,16 +234,16 @@ Como somas e subtrações custam $O(n)$ e multiplicações custam muito mais, es
 
 Nomeando os três produtos que precisamos calcular:
 
-- $Z_1 = A_1 \cdot B_1$ (produto das partes altas)
-- $Z_2 = A_0 \cdot B_0$ (produto das partes baixas)
-- $Z_3 = (A_1 + A_0) \cdot (B_1 + B_0)$ (produto das somas)
+- $Z_1 = \color{blue}A_1\color{black} \cdot \color{purple}B_1\color{black}$ (produto das partes altas)
+- $Z_2 = \color{green}A_0\color{black} \cdot \color{orange}B_0\color{black}$ (produto das partes baixas)
+- $Z_3 = (\color{blue}A_1\color{black} + \color{green}A_0\color{black}) \cdot (\color{purple}B_1\color{black} + \color{orange}B_0\color{black})$ (produto das somas)
 
 ??? Checkpoint
 
 Com $Z_1$, $Z_2$ e $Z_3$ em mãos, como você escreveria a fórmula final de $x \cdot y$ usando apenas esses três termos, *shifts* e operações aritméticas baratas?
 
 ::: Gabarito
-Sabemos que $A_1B_0 + A_0B_1 = Z_3 - Z_1 - Z_2$. Substituindo na expansão original:
+Sabemos que $\color{blue}A_1\color{orange}B_0\color{black} + \color{green}A_0\color{purple}B_1\color{black} = Z_3 - Z_1 - Z_2$. Substituindo na expansão original:
 
 $$x \cdot y = Z_1 \cdot 10^{n} + (Z_3 - Z_1 - Z_2) \cdot 10^{n/2} + Z_2$$
 
@@ -304,21 +308,21 @@ Vamos aplicar Karatsuba a um exemplo concreto para fixar o entendimento.
 
 **Etapa 1: Dividir os números**
 
-- $A = 12 \rightarrow A_1 = 1$, $A_0 = 2$
-- $B = 34 \rightarrow B_1 = 3$, $B_0 = 4$
+- $A = 12 \rightarrow \color{blue}A_1\color{black} = 1$, $\color{green}A_0\color{black} = 2$
+- $B = 34 \rightarrow \color{purple}B_1\color{black} = 3$, $\color{orange}B_0\color{black} = 4$
 
 **Etapa 2: Calcular os três produtos**
 
-- $Z_1 = A_1 \cdot B_1 = 1 \cdot 3 = 3$
-- $Z_2 = A_0 \cdot B_0 = 2 \cdot 4 = 8$
-- $Z_3 = (A_1 + A_0) \cdot (B_1 + B_0) = (1+2) \cdot (3+4) = 3 \cdot 7 = 21$
+- $Z_1 = \color{blue}A_1\color{black} \cdot \color{purple}B_1\color{black} = 1 \cdot 3 = 3$
+- $Z_2 = \color{green}A_0\color{black} \cdot \color{orange}B_0\color{black} = 2 \cdot 4 = 8$
+- $Z_3 = (\color{blue}A_1\color{black} + \color{green}A_0\color{black}) \cdot (\color{purple}B_1\color{black} + \color{orange}B_0\color{black}) = (1+2) \cdot (3+4) = 3 \cdot 7 = 21$
 
 ??? Checkpoint
-Por que $Z_3$ usa as somas $A_1+A_0$ e $B_1+B_0$? O que isso representa?
+Por que $Z_3$ usa as somas $\color{blue}A_1\color{black}+\color{green}A_0\color{black}$ e $\color{purple}B_1\color{black}+\color{orange}B_0\color{black}$? O que isso representa?
 ::: Gabarito
 $Z_3$ é o produto auxiliar que nos dará os termos cruzados. Quando expandimos:
 
-$$(A_1+A_0)(B_1+B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0 = Z_1 + (A_1B_0 + A_0B_1) + Z_2$$
+$$(\color{blue}A_1\color{black}+\color{green}A_0\color{black})(\color{purple}B_1\color{black}+\color{orange}B_0\color{black}) = \color{blue}A_1\color{purple}B_1\color{black} + \color{blue}A_1\color{orange}B_0\color{black} + \color{green}A_0\color{purple}B_1\color{black} + \color{green}A_0\color{orange}B_0\color{black} = Z_1 + (\color{blue}A_1\color{orange}B_0\color{black} + \color{green}A_0\color{purple}B_1\color{black}) + Z_2$$
 
 É como se $Z_3$ contivesse "tudo de uma vez" — daí podemos isolar a soma que precisamos subtraindo $Z_1$ e $Z_2$.
 :::
@@ -328,7 +332,7 @@ $$(A_1+A_0)(B_1+B_0) = A_1B_1 + A_1B_0 + A_0B_1 + A_0B_0 = Z_1 + (A_1B_0 + A_0B_
 
 $$Z_3 - Z_1 - Z_2 = 21 - 3 - 8 = 10$$
 
-Isto é exatamente $(A_1B_0 + A_0B_1)$!
+Isto é exatamente $(\color{blue}A_1\color{orange}B_0\color{black} + \color{green}A_0\color{purple}B_1\color{black})$!
 
 **Etapa 4: Montar o resultado final**
 
@@ -356,7 +360,7 @@ A base de todo processo recursivo é saber a hora de parar. Quando um número te
 Antes de montar a árvore, separamos dois custos distintos em cada nível:
 
 1. **Custo das chamadas recursivas:** as três multiplicações ($T(n/2)$ cada).
-2. **Custo do trabalho extra:** somas ($A_1 + A_0$, $B_1 + B_0$), subtrações e *shifts* — tudo $O(n)$.
+2. **Custo do trabalho extra:** somas ($\color{blue}A_1\color{black} + \color{green}A_0\color{black}$, $\color{purple}B_1\color{black} + \color{orange}B_0\color{black}$), subtrações e *shifts* — tudo $O(n)$.
 
 !!! Aviso
 Esse termo $O(n)$ **não representa uma nova chamada recursiva**. É o trabalho feito **dentro de cada nível** (somas, subtrações e deslocamentos).
@@ -465,7 +469,6 @@ $$\left(\frac{3}{2}\right)^{\log_2 n+1} = \left(\frac{3}{2}\right)\left(\frac{3}
 Portanto:
 
 $$S=2c\cdot n\left[\frac{3}{2}\left(\frac{3}{2}\right)^{\log_2 n}-1\right]$$
-
 :::
 ???
 
@@ -500,7 +503,7 @@ $$T(n) = O(n^{\log_2 3}) \approx O(n^{1.58})$$
 Karatsuba percebeu que:
 
 1. **O problema real** são as 4 multiplicações do método ingênuo.
-2. **A solução** é calcular um produto extra $(A_1 + A_0)(B_1 + B_0)$.
-3. **A economia** vem de obter $A_1B_0 + A_0B_1$ por diferença, evitando duas multiplicações.
+2. **A solução** é calcular um produto extra $(\color{blue}A_1\color{black} + \color{green}A_0\color{black})(\color{purple}B_1\color{black} + \color{orange}B_0\color{black})$.
+3. **A economia** vem de obter $\color{blue}A_1\color{orange}B_0\color{black} + \color{green}A_0\color{purple}B_1\color{black}$ por diferença, evitando duas multiplicações.
 
 Trocamos **multiplicações caras** por **adições e subtrações baratas** — um trabalho extra de apenas $O(n)$ por nível. O benefício é reduzir o fator de ramificação da árvore de 4 para 3, levando de $O(n^2)$ para $O(n^{1.58})$.
