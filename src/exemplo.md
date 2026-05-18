@@ -419,34 +419,77 @@ A altura da árvore continua sendo $k = \log_2 n$. Vamos montar a soma total $S$
 ??? Checkpoint
 Monte a soma dos custos dos níveis da árvore.
 ::: Gabarito
-$$S = c \cdot n \left[1 + \frac{3}{2} + \left(\frac{3}{2}\right)^2 + \dots + \left(\frac{3}{2}\right)^{\log_2 n}\right]$$
+$$S=c\cdot n\left[1+\frac{3}{2}+\left(\frac{3}{2}\right)^2+\dots+\left(\frac{3}{2}\right)^{\log_2 n}\right]$$
 :::
 ???
 
 ??? Checkpoint
-Identifique os termos da PG dentro dos colchetes: primeiro termo $a_1$, razão $q$ e quantidade de termos $x$.
+A soma obtida é uma progressão geométrica.
+
+$$1+\frac{3}{2}+\left(\frac{3}{2}\right)^2+\dots+\left(\frac{3}{2}\right)^{\log_2 n}$$
+
+Identifique:
+
+*   o primeiro termo $a_1$
+*   a razão $q$
+*   a quantidade de termos $x$
 ::: Gabarito
-- $a_1 = 1$
-- $q = \frac{3}{2}$
-- $x = \log_2 n + 1$
+*   $a_1=1$
+*   $q=\frac{3}{2}$
+*   $x=\log_2 n+1$
 :::
 ???
 
 ??? Checkpoint
-Calcule a soma total $S$ usando a fórmula da PG: $S_n = a_1 \cdot \frac{q^x - 1}{q - 1}$.
+Agora calcule a soma total dos custos. Para isso, use a fórmula da progressão geométrica.
+
+$$S_n=a_1\cdot \frac{q^x-1}{q-1}$$
+
 ::: Gabarito
-$$S = c \cdot n \cdot \frac{\left(\frac{3}{2}\right)^{\log_2 n + 1} - 1}{\frac{3}{2} - 1} = 2c \cdot n \left[\frac{3}{2} \cdot \left(\frac{3}{2}\right)^{\log_2 n} - 1\right]$$
+$$S=c\cdot n\cdot \left(\frac{\left(\frac{3}{2}\right)^{\log_2 n+1}-1}{\frac{3}{2}-1}\right)$$
+
+Simplificando:
+
+$$S=2c\cdot n\left[\left(\frac{3}{2}\right)^{\log_2 n+1}-1\right]$$
 :::
 ???
 
 ??? Checkpoint
-Simplifique $\left(\frac{3}{2}\right)^{\log_2 n}$. *(Dica: $2^{\log_2 n} = n$ e $3^{\log_2 n} = n^{\log_2 3}$.)*
-::: Gabarito
-$$\left(\frac{3}{2}\right)^{\log_2 n} = \frac{3^{\log_2 n}}{2^{\log_2 n}} = \frac{n^{\log_2 3}}{n}$$
+Reescreva a potência separando o expoente $\log_2 n+1$.
+Partimos de:
 
-Substituindo em $S$, o termo principal cresce proporcionalmente a $n^{\log_2 3}$.
+$$S=2c\cdot n\left[\left(\frac{3}{2}\right)^{\log_2 n+1}-1\right]$$
+::: Gabarito
+$$\left(\frac{3}{2}\right)^{\log_2 n+1} = \left(\frac{3}{2}\right)\left(\frac{3}{2}\right)^{\log_2 n}$$
+
+Portanto:
+
+$$S=2c\cdot n\left[\frac{3}{2}\left(\frac{3}{2}\right)^{\log_2 n}-1\right]$$
+
 :::
 ???
+
+??? Checkpoint
+Simplifique a potência:
+
+$$\left(\frac{3}{2}\right)^{\log_2 n}$$
+::: Gabarito
+$$\left(\frac{3}{2}\right)^{\log_2 n} = \frac{3^{\log_2 n}}{2^{\log_2 n}}$$
+
+Como:
+
+$$2^{\log_2 n}=n$$
+e
+$$3^{\log_2 n}=n^{\log_2 3}$$
+
+temos:
+$$\left(\frac{3}{2}\right)^{\log_2 n} = \frac{n^{\log_2 3}}{n}$$
+:::
+???
+
+Substituindo esse resultado na expressão do custo total $S$, vemos que o termo principal da soma cresce proporcionalmente a $n^{\log_2 3}$.
+
+Como estamos interessados na ordem de crescimento, ignoramos constantes e termos menores.
 
 Portanto, a complexidade do algoritmo de Karatsuba é:
 
