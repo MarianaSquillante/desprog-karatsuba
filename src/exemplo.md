@@ -104,30 +104,63 @@ $$16 \cdot c \cdot \frac{n}{4} = 4cn$$
 ??? Checkpoint
 Consegue perceber o padrão? Escreva a fórmula do custo total no **Nível $i$**.
 ::: Gabarito
-O custo **dobra** a cada nível da árvore:
+O custo **dobra** a cada nível da árvore. A fórmula para o custo total de um nível $i$ qualquer é:
 $$c \cdot n \cdot 2^i$$
 :::
 ???
 
 ??? Checkpoint
-A recursão para quando o tamanho do problema chega a **1**. Se o tamanho do subproblema após $k$ níveis é $n/2^k$, para qual valor de $k$ o subproblema tem tamanho 1? Esse é a **altura** da árvore.
+Se o tamanho do problema começa em $n$ e é **dividido por 2** a cada nível, qual será o tamanho do subproblema após $k$ níveis?
 ::: Gabarito
-$$\frac{n}{2^k} = 1 \implies n = 2^k \implies k = \log_2 n$$
+O tamanho será:
+$$\frac{n}{2^k}$$
 :::
 ???
 
 ??? Checkpoint
-Monte a soma dos custos de todos os níveis (do nível 0 até o nível $\log_2 n$) e simplifique. *(Dica: é uma PG. Lembre que $2^{\log_2 n} = n$.)*
+A recursão para quando o tamanho do problema chega a **1**. Use a fórmula anterior ($\frac{n}{2^k} = 1$) para isolar o $k$ e descobrir a **altura** da árvore.
 ::: Gabarito
-$$S = cn + 2cn + 4cn + \dots + cn \cdot 2^{\log_2 n} = cn \cdot [1 + 2 + 4 + \dots + 2^{\log_2 n}]$$
-
-Usando a fórmula da PG com $a_1 = 1$, $q = 2$ e $x = \log_2 n + 1$:
-
-$$S = cn \cdot \frac{2^{\log_2 n + 1} - 1}{2 - 1} = cn \cdot (2n - 1) = 2cn^2 - cn$$
+$$\frac{n}{2^k} = 1 \implies n = 2^k \implies k = \log_2 n$$
+A altura da árvore é $\log_2 n$.
 :::
 ???
 
-Como o termo de maior ordem é $n^2$, a complexidade é $O(n^2)$, idêntica à multiplicação dígito a dígito. Dividir ao meio e gerar 4 subproblemas **não melhorou nada**.
+Agora, vamos somar o custo de todos os níveis para chegar no custo total $S$.
+
+??? Checkpoint
+Monte a soma dos custos de todos os níveis (do nível 0 até o nível $\log_2 n$).
+::: Gabarito
+$$S = cn + 2cn + 4cn + \dots + cn \cdot 2^{\log_2 n}$$
+Fatorando $cn$:
+$$S = cn \cdot [1 + 2 + 4 + \dots + 2^{\log_2 n}]$$
+:::
+???
+
+??? Checkpoint
+A soma dentro dos colchetes é uma PG. Identifique os termos para usar na fórmula da soma ($S_x = a_1 \cdot \frac{q^x - 1}{q - 1}$):
+*   Primeiro termo ($a_1$):
+*   Razão ($q$):
+*   Quantidade de termos ($x$):
+::: Gabarito
+*   $a_1 = 1$
+*   $q = 2$
+*   $x = \log_2 n + 1$ (contando do nível 0 ao nível $\log_2 n$)
+:::
+???
+
+??? Checkpoint
+Calcule a soma total $S$ simplificando a expressão. 
+*(Dica: lembre-se que $2^{\log_2 n} = n$)*.
+::: Gabarito
+$$S = cn \cdot \left( \frac{2^{\log_2 n + 1} - 1}{2 - 1} \right)$$
+$$S = cn \cdot (2 \cdot 2^{\log_2 n} - 1)$$
+$$S = cn \cdot (2n - 1) = 2cn^2 - cn$$
+:::
+???
+
+Como o termo de maior ordem é $n^2$, a complexidade é **$O(n^2)$**.
+
+Dividir o número ao meio e gerar 4 subproblemas **não melhorou a eficiência**, continuamos empatados com o método escolar.
 
 Será que existe alguma forma matemática de reduzir esse número de ramificações?
 
