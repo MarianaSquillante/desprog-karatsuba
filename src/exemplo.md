@@ -10,10 +10,40 @@ Nesses casos, o computador opera **dígito por dígito**. Por isso, precisamos r
 A partir de agora, a **operação básica** é a manipulação de um único dígito. Isso muda tudo na nossa análise de complexidade.
 !!!
 
-Consequências imediatas:
+??? Checkpoint
+Pensando no algoritmo tradicional de somar coluna por coluna (e "levar um" quando passa de 10), quantas somas de um único dígito você precisa realizar, no pior caso, para somar dois números de $n$ dígitos? O que isso significa em notação O?
+::: Gabarito
+Para cada uma das $n$ colunas, você faz pelo menos uma operação de soma de dígitos (e ocasionalmente soma o "vai um"). 
 
-- **Somar** dois números de $n$ dígitos: custo $O(n)$.
-- **Multiplicar** pelo método escolar: custo $O(n^2)$.
+Como o trabalho é feito coluna por coluna, o número de operações cresce de forma **linear** em relação ao número de dígitos. Portanto, o custo de somar dois números de $n$ dígitos é **$O(n)$**.
+:::
+???
+
+Agora, vamos para a operação que realmente nos interessa: a multiplicação. Lembra de como montamos a grade para multiplicar? 
+
+Veja o exemplo abaixo de uma multiplicação de dois números de 3 dígitos ($n = 3$):
+
+$$\begin{array}{c@{\quad}l}
+\quad 1 \quad 2 \quad 3 \\
+\times \quad 4 \quad 5 \quad 6 \\
+\hline
+\quad 7 \quad 3 \quad 8 \quad \leftarrow \text{(3 multiplicações de dígito)} \\
+\quad 6 \quad 1 \quad 5 \quad 0 \quad \leftarrow \text{(3 multiplicações de dígito)} \\
+4 \quad 9 \quad 2 \quad 0 \quad 0 \quad \leftarrow \text{(3 multiplicações de dígito)} \\
+\hline
+\end{array}$$
+
+??? Checkpoint
+Olhando para o formato desse algoritmo escolar:
+1. Se cada número tem $n$ dígitos, quantas multiplicações de **um único dígito** (como $6 \times 3$, $6 \times 2$, etc.) você precisa fazer ao todo para preencher as linhas intermediárias?
+2. Se você visualizar essas operações como uma tabela/grade, qual é a ordem de grandeza O do custo total dessa multiplicação?
+::: Gabarito
+1. Cada um dos $n$ dígitos do segundo número precisa ser multiplicado por cada um dos $n$ dígitos do primeiro número. Isso gera $n$ linhas intermediárias, onde cada linha contém $n$ produtos de sub-dígitos. O total de multiplicações básicas é $n \cdot n = n^2$.
+2. Como o número de operações básicas cresce com o quadrado do número de dígitos, a complexidade do método escolar é **$O(n^2)$**.
+:::
+???
+
+
 
 Nosso objetivo: encontrar um algoritmo melhor do que $O(n^2)$.
 
