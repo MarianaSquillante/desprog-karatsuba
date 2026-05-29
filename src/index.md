@@ -216,7 +216,7 @@ Isso sugere que, se conseguirmos calcular essa **soma diretamente**, sem precisa
 
 ## A Ideia de Karatsuba
 
-Então o problema se resume a: **como obter $A_1B_0 + A_0B_1$ com menos do que 2 multiplicações?**
+Lembre-se: o que queremos é **reduzir o número de multiplicações**. Somas e subtrações custam apenas $O(n)$ — podemos ter quantas quisermos. O que precisamos evitar são as multiplicações caras.
 
 ??? Checkpoint
 
@@ -230,7 +230,7 @@ $$(\color{blue}A_1\color{black} + \color{green}A_0 \color{black}) \cdot (\color{
 
 ??? Checkpoint
 
-Compare a expansão acima com os produtos que já sabemos calcular: $A_1B_1$ e $A_0B_0$. O que sobra se subtrairmos esses dois da expansão?
+Observe a expansão que você obteve. Sabendo que já temos $A_1B_1$ e $A_0B_0$ disponíveis, será que conseguimos expressar $A_1B_0 + A_0B_1$ em função dessas quantidades que já conhecemos?
 
 ::: Gabarito
 $$(\color{blue}A_1\color{black} + \color{green}A_0\color{black})(\color{purple}B_1\color{black} +\color{orange} B_0)\color{black} = \underbrace{\color{blue}A_1\color{purple}B_1\color{black} + \color{green}A_0\color{orange}B_0}_{\text{já conhecemos}}\color{black} + \underbrace{(\color{blue}A_1\color{orange}B_0\color{black} + \color{green}A_0\color{purple}B_1\color{black})}_{\text{o que queremos!}}$$
